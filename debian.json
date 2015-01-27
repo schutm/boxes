@@ -1,0 +1,90 @@
+{
+  "variables": {
+    "fullname": "Vagrant",
+    "username": "vagrant",
+    "password": "vagrant",
+
+    "iso_checksum": "0d2f88d23a9d5945f5bc0276830c7d2c",
+    "iso_checksum_type": "md5",
+    "architecture": "i386",
+    "version": "7.8.0",
+
+    "atlas_artifact": "meritieau/wheezy32",
+    "atlas_token": "{{env `ATLAS_TOKEN`}}",
+
+    "headless": true
+  },
+
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "guest_os_type": "Debian",
+      "disk_size": 1000,
+      "iso_url": "http://cdimage.debian.org/debian-cd/{{user `version`}}/{{user `architecture`}}/iso-cd/debian-{{user `version`}}-{{user `architecture`}}-netinst.iso",
+      "iso_checksum": "{{user `iso_checksum`}}",
+      "iso_checksum_type": "{{user `iso_checksum_type`}}",
+      "http_directory": "http",
+      "ssh_username": "{{user `username`}}",
+      "ssh_password": "{{user `password`}}",
+      "ssh_wait_timeout": "1h30m",
+      "shutdown_command": "echo '{{user `password`}}' | sudo -S halt -p",
+      "headless": "{{user `headless`}}",
+      "boot_wait": "5s",
+      "boot_command": [
+        "<esc><wait>",
+        "auto url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+        "passwd/user-fullname={{user `fullname`}} ",
+        "passwd/username={{user `username`}} ",
+        "passwd/user-password={{user `password`}} ",
+        "passwd/user-password-again={{user `password`}} ",
+        "<enter>"
+      ]
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/prepare-provisioners.sh",
+        "scripts/vagrant.sh",
+        "scripts/virtualbox.sh"
+      ],
+      "execute_command": "echo '{{user `password`}}' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'"
+    },
+    {
+        "type": "file",
+        "source": "./provisioners/",
+        "destination": "/provisioners"
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/zerodisk.sh"
+      ],
+      "execute_command": "echo '{{user `password`}}' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'"
+    }
+  ],
+
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "output": "debian-{{user `version`}}-{{user `architecture`}}_{{.Provider}}.box",
+      "keep_input_artifact": false
+    },
+    {
+      "type": "atlas",
+      "artifact": "{{user `atlas_artifact`}}",
+      "artifact_type": "virtualbox",
+      "token": "{{user `atlas_token`}}",
+      "metadata": {
+        "created_at": "{{timestamp}}"
+      }
+    }
+  ],
+
+  "push": {
+    "name": "{{user `atlas_artifact`}}",
+    "token": "{{user `atlas_token`}}"
+  }
+}
