@@ -19,7 +19,7 @@
     {
       "type": "virtualbox-iso",
       "guest_os_type": "Debian",
-      "disk_size": 1000,
+      "disk_size": 2000,
       "iso_url": "http://cdimage.debian.org/debian-cd/{{user `version`}}/{{user `architecture`}}/iso-cd/debian-{{user `version`}}-{{user `architecture`}}-netinst.iso",
       "iso_checksum": "{{user `iso_checksum`}}",
       "iso_checksum_type": "{{user `iso_checksum_type`}}",
