@@ -11,7 +11,7 @@ sudo apt-get update
 sudo aptitude -y -t wheezy-backports install --without-recommends nodejs nodejs-legacy libv8-3.14.5 libc-ares2
 
 # install npm from the live sources
-curl -L https://npmjs.org/install.sh | sudo sh
+npm -v > /dev/null || curl -L https://npmjs.org/install.sh | sudo sh
 
 # and finally install less
 sudo npm install -g less
