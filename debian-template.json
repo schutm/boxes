@@ -4,20 +4,21 @@
     "username": "vagrant",
     "password": "vagrant",
 
-    "iso_checksum": "0d2f88d23a9d5945f5bc0276830c7d2c",
-    "iso_checksum_type": "md5",
-    "architecture": "i386",
     "version": "7.8.0",
+    "architecture": "",
+    "iso_checksum": "",
+    "iso_checksum_type": "",
 
-    "atlas_artifact": "meritieau/wheezy32",
-    "atlas_token": "{{env `ATLAS_TOKEN`}}",
+    "build_dir": "",
+    "output_dir": "",
 
-    "headless": true
+    "headless": false
   },
 
   "builders": [
     {
       "type": "virtualbox-iso",
+      "output_directory": "{{user `build_dir`}}/debian-{{user `architecture`}}_VirtualBox",
       "guest_os_type": "Debian",
       "disk_size": 2000,
       "iso_url": "http://cdimage.debian.org/debian-cd/{{user `version`}}/{{user `architecture`}}/iso-cd/debian-{{user `version`}}-{{user `architecture`}}-netinst.iso",
@@ -69,22 +70,8 @@
   "post-processors": [
     {
       "type": "vagrant",
-      "output": "debian-{{user `version`}}-{{user `architecture`}}_{{.Provider}}.box",
+      "output": "{{user `output_dir`}}/debian-{{user `version`}}-{{user `architecture`}}_{{.Provider}}.box",
       "keep_input_artifact": false
-    },
-    {
-      "type": "atlas",
-      "artifact": "{{user `atlas_artifact`}}",
-      "artifact_type": "virtualbox",
-      "token": "{{user `atlas_token`}}",
-      "metadata": {
-        "created_at": "{{timestamp}}"
-      }
     }
-  ],
-
-  "push": {
-    "name": "{{user `atlas_artifact`}}",
-    "token": "{{user `atlas_token`}}"
-  }
+  ]
 }
