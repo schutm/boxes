@@ -3,5 +3,5 @@
 # install node
 bash /providers/nodejs.sh
 
-# and finally install phantomjs
+# install phantomjs
 sudo npm install -g phantomjs
