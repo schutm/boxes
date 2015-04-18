@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 
 # install node
-bash /providers/nodejs.sh
+sh /provisioners/nodejs.sh
 
 # install phantomjs
-sudo npm install -g phantomjs
+npm install -g phantomjs

@@ -3,5 +3,5 @@
 # install node
 sh /provisioners/nodejs.sh
 
-# install less
-npm install -g less
+# install react
+npm install -g react-tools
